@@ -2,31 +2,53 @@
 
 var circle = new Circle(Random.Shared.Next(10) + 1);
 var triangle = new RightAngledTriangle(Random.Shared.Next(10) + 1, Random.Shared.Next(10) + 1);
+var square = new Square(Random.Shared.Next(10) + 1);
 
-var circleArea = Math.PI * Math.Pow(circle.Radius, 2);
-var triangleArea = triangle.Width * triangle.Height / 2.0;
+List<IShape> shapes = [circle, triangle, square];
 
-Console.WriteLine($"The area of the circle is {circleArea}");
-Console.WriteLine($"The area of the triangle is {triangleArea}");
-
-if (circleArea > triangleArea)
+foreach (var shape in shapes)
 {
-    Console.WriteLine("The circle is the largest");
-}
-else if (circleArea < triangleArea)
-{
-    Console.WriteLine("The triangle is the largest");
-}
-else
-{
-    Console.WriteLine("The circle and triangle are the same size");
+    Console.WriteLine($"The area of the {shape.Name} is {shape.GetArea()}");
 }
 
+Console.WriteLine(ComparisonLargestShape(shapes));
+return;
+
+string ComparisonLargestShape(List<IShape> allShapes)
+{
+    var largestArea = allShapes.Max(shape => shape.GetArea());
+    var largestShapes = allShapes.Where(x => x.GetArea() == largestArea).ToList();
+
+    return largestShapes.Count == 1
+        ? $"The {largestShapes[0].Name} is the largest"
+        : $"The {string.Join(" and ", largestShapes.Select(x => x.Name))} are the same area";
+}
+
+// Interface
 public interface IShape
 {
+    string Name { get; }
     double GetArea();
 }
 
-public record Circle(int Radius) : IShape { }
+// Implementations
+public record Circle(int Radius) : IShape
+{
+    public string Name => "circle";
 
-public record RightAngledTriangle(int Width, int Height) : IShape { }
+    public double GetArea() => Math.PI * Math.Pow(Radius, 2);
+}
+
+public record RightAngledTriangle(int Width, int Height) : IShape
+{
+    public string Name => "triangle";
+
+    public double GetArea() => Width * Height / 2.0;
+}
+
+public record Square(int Side) : IShape
+{
+    public string Name => "square";
+
+    public double GetArea() => Side * Side;
+}
