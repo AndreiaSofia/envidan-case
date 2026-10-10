@@ -1,6 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using SOLID.Assignment.Shapes;
+
+namespace SOLID.Assignment;
 
 public class LargestShapeFinder
 {
@@ -8,19 +8,22 @@ public class LargestShapeFinder
 
     public IReadOnlyList<IShape> FindLargest(IEnumerable<IShape> shapes)
     {
-        if (shapes == null) return Array.Empty<IShape>();
+        ArgumentNullException.ThrowIfNull(shapes);
 
         var list = shapes.ToList();
 
         if (list.Count == 0)
         {
-            return Array.Empty<IShape>();
+            return [];
         }
 
         // Compute areas once to avoid repeated GetArea() calls
         var areas = list.Select(s => (Shape: s, Area: s.GetArea())).ToList();
         var max = areas.Max(x => x.Area);
 
-        return areas.Where(x => Math.Abs(x.Area - max) < Tolerance).Select(x => x.Shape).ToList();
+        return areas
+            .Where(x => Math.Abs(x.Area - max) < Tolerance)
+            .Select(x => x.Shape)
+            .ToList();
     }
 }

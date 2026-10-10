@@ -1,7 +1,6 @@
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
+using SOLID.Assignment.Shapes;
+
+namespace SOLID.Assignment;
 
 public class ShapeReport
 {
@@ -9,13 +8,14 @@ public class ShapeReport
 
     public ShapeReport(TextWriter output)
     {
-        this.output = output ?? throw new ArgumentNullException(nameof(output));
+        ArgumentNullException.ThrowIfNull(output);
+        this.output = output;
     }
 
     public void Write(IReadOnlyList<IShape> allShapes, IReadOnlyList<IShape> largestShapes)
     {
-        if (allShapes == null) throw new ArgumentNullException(nameof(allShapes));
-        if (largestShapes == null) throw new ArgumentNullException(nameof(largestShapes));
+        ArgumentNullException.ThrowIfNull(allShapes);
+        ArgumentNullException.ThrowIfNull(largestShapes);
 
         foreach (var shape in allShapes)
         {
@@ -25,7 +25,7 @@ public class ShapeReport
         output.WriteLine(Comparison(largestShapes));
     }
 
-    private string Comparison(IReadOnlyList<IShape> largestShapes) => largestShapes.Count switch
+    private static string Comparison(IReadOnlyList<IShape> largestShapes) => largestShapes.Count switch
     {
         0 => "There are no shapes to compare",
         1 => $"The {largestShapes[0].Name} is the largest",

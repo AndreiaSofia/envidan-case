@@ -1,3 +1,5 @@
+namespace SOLID.Assignment.Shapes;
+
 public record Square : IShape
 {
     public int Side { get; }
@@ -10,5 +12,6 @@ public record Square : IShape
 
     public string Name => "square";
 
-    public double GetArea() => Side * Side;
+    // Multiply as double so large sides do not overflow int before the conversion.
+    public double GetArea() => (double)Side * Side;
 }

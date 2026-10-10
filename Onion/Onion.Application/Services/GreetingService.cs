@@ -1,6 +1,6 @@
 using Onion.Application.Interfaces;
-using Onion.Domain.Entities;
 using Onion.Application.Models;
+using Onion.Domain.Entities;
 
 namespace Onion.Application.Services;
 
@@ -13,12 +13,17 @@ public class GreetingService : IGreetingService
         _repository = repository;
     }
 
-    public Greeting CreateGreeting(CreateGreetingRequest request)
+    public GreetingResult CreateGreeting(CreateGreetingRequest request)
     {
-        // Map application request -> domain object. Domain validation is
+        ArgumentNullException.ThrowIfNull(request);
+
+        // Map application request -> domain objects. Domain validation is
         // enforced by the Person constructor.
         var person = new Person(request.Name);
-        var greeting = _repository.SaveGreeting(person);
-        return greeting;
+        var greeting = Greeting.For(person);
+
+        _repository.Save(greeting);
+
+        return new GreetingResult(greeting.Message);
     }
 }

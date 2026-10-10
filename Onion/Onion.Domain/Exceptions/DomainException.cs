@@ -1,5 +1,3 @@
-using System;
-
 namespace Onion.Domain.Exceptions;
 
 public class DomainException : Exception

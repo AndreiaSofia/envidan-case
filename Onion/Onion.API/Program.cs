@@ -1,3 +1,7 @@
+using Onion.API.Filters;
+using Onion.Application;
+using Onion.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
@@ -5,14 +9,15 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Application / Infrastructure DI
-builder.Services.AddScoped<Onion.Application.Interfaces.IGreetingService, Onion.Application.Services.GreetingService>();
-builder.Services.AddSingleton<Onion.Application.Interfaces.IGreetingRepository, Onion.Infrastructure.Repositories.GreetingRepository>();
+// Inner layers. The API project is the composition root: the only place that
+// knows which implementation backs each interface.
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
 
 // API layer (controllers) + register domain exception filter globally
 builder.Services.AddControllers(options =>
 {
-    options.Filters.Add(typeof(Onion.API.Filters.DomainExceptionFilter));
+    options.Filters.Add<DomainExceptionFilter>();
 });
 
 var app = builder.Build();

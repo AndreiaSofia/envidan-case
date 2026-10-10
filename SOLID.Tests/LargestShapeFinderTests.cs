@@ -1,6 +1,8 @@
-using System;
-using System.Linq;
+using SOLID.Assignment;
+using SOLID.Assignment.Shapes;
 using Xunit;
+
+namespace SOLID.Tests;
 
 public class LargestShapeFinderTests
 {
@@ -9,10 +11,10 @@ public class LargestShapeFinderTests
     {
         // Arrange
         var finder = new LargestShapeFinder();
-        
+
         // Act
-        var result = finder.FindLargest(Array.Empty<IShape>());
-        
+        var result = finder.FindLargest([]);
+
         // Assert
         Assert.Empty(result);
     }
@@ -21,7 +23,7 @@ public class LargestShapeFinderTests
     public void FindLargest_SingleLargest_ReturnsThatShape()
     {
         // Arrange
-        IShape[] shapes = new IShape[] { new Circle(2), new Square(3) };        
+        IShape[] shapes = [new Circle(2), new Square(3)];
         var finder = new LargestShapeFinder();
 
         // Act
@@ -36,7 +38,7 @@ public class LargestShapeFinderTests
     public void FindLargest_MultipleEqualLargest_ReturnsBoth()
     {
         // Arrange
-        IShape[] shapes = new IShape[] { new Square(2), new RightAngledTriangle(4, 2), new Circle(1) };
+        IShape[] shapes = [new Square(2), new RightAngledTriangle(4, 2), new Circle(1)];
         var finder = new LargestShapeFinder();
 
         // Act
@@ -45,6 +47,16 @@ public class LargestShapeFinderTests
         // Assert
         Assert.Equal(2, result.Count);
         var names = result.Select(s => s.Name).OrderBy(n => n).ToArray();
-        Assert.Equal(new[] { "square", "triangle" }, names);
+        Assert.Equal(["square", "triangle"], names);
+    }
+
+    [Fact]
+    public void FindLargest_Null_Throws()
+    {
+        // Arrange
+        var finder = new LargestShapeFinder();
+
+        // Act / Assert
+        Assert.Throws<ArgumentNullException>(() => finder.FindLargest(null!));
     }
 }
