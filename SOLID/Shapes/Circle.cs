@@ -1,6 +1,14 @@
-public record Circle(int Radius) : IShape
+public record Circle : IShape
 {
-	public string Name => "circle";
+    public int Radius { get; }
+
+    public Circle(int radius)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(radius); 
+        Radius = radius; 
+    }
+
+    public string Name => "circle";
 
 	public double GetArea() => Math.PI * Math.Pow(Radius, 2);
 }
